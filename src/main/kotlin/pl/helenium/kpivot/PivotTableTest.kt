@@ -1,6 +1,7 @@
 package pl.helenium.kpivot
 
 import java.math.BigDecimal
+import java.math.RoundingMode.HALF_EVEN
 import java.util.*
 import kotlin.random.Random
 
@@ -43,12 +44,15 @@ fun main() {
     }
     employees.forEach(::println)
 
-    val pivotTable = employees.pivot(sum(Employee::salary)) {
-        dimension(it.department)
-        dimension(it.position, it.seniority)
-    }
+    val pivotTable =
+        employees.pivot(avg(Employee::salary, BigDecimal::plus, bigDecimalIntDiv())) {
+            dimension(it.department)
+            dimension(it.position, it.seniority)
+        }
 
     pivotTable
         .compute()
         .forEach { (k, v) -> println("$k -> $v") }
 }
+
+fun bigDecimalIntDiv() = { v: BigDecimal, d: Int -> v.divide(d.toBigDecimal(), HALF_EVEN) }

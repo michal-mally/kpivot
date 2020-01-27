@@ -1,27 +1,18 @@
 package pl.helenium.kpivot
 
-import java.math.BigDecimal
+fun <T> count() =
+    ValueExtractor<T, Int>({ 1 }) {
+        it.reduce(Int::plus)
+    }
 
-interface Operations<T> {
-    fun plus(a: T, b: T): T
-}
-
-class BigDecimalOperations : Operations<BigDecimal> {
-    override fun plus(a: BigDecimal, b: BigDecimal) = a.plus(b)
-}
-
-inline fun <T, reified V> sum(noinline extract: (T) -> V) = sum(extract, operations())
-
-fun <T, V> sum(extract: (T) -> V, operations: Operations<V>) =
+fun <T, V> sum(extract: (T) -> V, plus: BinaryOp<V>) =
     ValueExtractor(extract) {
-        it.reduce(operations::plus)
+        it.reduce(plus)
     }
 
-inline fun <reified T> operations(): Operations<T> {
-    if (T::class.java == BigDecimal::class.java) {
-        @Suppress("UNCHECKED_CAST")
-        return BigDecimalOperations() as Operations<T>
+fun <T, V> avg(extract: (T) -> V, plus: BinaryOp<V>, div: V.(Int) -> V) =
+    ValueExtractor(extract) {
+        it.reduce(plus).div(it.size)
     }
 
-    throw IllegalArgumentException("Type ${T::class.java} is not supported!")
-}
+typealias BinaryOp<T> = (T, T) -> T

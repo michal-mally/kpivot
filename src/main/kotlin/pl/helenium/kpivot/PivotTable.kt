@@ -38,7 +38,7 @@ class DimensionsBuilder<T> {
     private val dimensions = mutableListOf<Dimension>()
 
     fun dimension(vararg fragments: Any?) {
-        this.dimensions.add(Dimension(fragments.toList()))
+        dimensions += Dimension(fragments.toList())
     }
 
     fun build() = Dimensions(dimensions)
