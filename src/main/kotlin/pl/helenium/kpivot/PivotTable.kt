@@ -1,7 +1,5 @@
 package pl.helenium.kpivot
 
-import com.google.common.collect.Lists.cartesianProduct
-
 fun <T, V> Collection<T>.pivot(
     valueExtractor: ValueExtractor<T, V>,
     dimensionsBuilder: Dimensions.(T) -> Unit
@@ -33,30 +31,6 @@ class ValueExtractor<T, V>(
     val extract: (T) -> V,
     val reduce: (Collection<V>) -> V
 )
-
-data class Dimensions(private val dimensions: MutableList<Dimension> = mutableListOf()) {
-    fun dimension(vararg fragments: Any?) {
-        dimensions += Dimension(fragments.toList())
-    }
-
-    fun allCombinations(): List<Dimensions> =
-        cartesianProduct(dimensions.map(Dimension::allLevels))
-            .map(::Dimensions)
-
-    override fun toString() = dimensions.joinToString(separator = "x")
-}
-
-data class Dimension(private val fragments: List<*>) {
-    fun allLevels() = generateSequence(this, Dimension::parent).toList()
-
-    private fun parent() =
-        fragments
-            .takeIf { it.isNotEmpty() }
-            ?.dropLast(1)
-            ?.let(::Dimension)
-
-    override fun toString() = fragments.joinToString(separator = "/", prefix = "[", postfix = "]")
-}
 
 private class Cell<V>(val dimensions: Dimensions, val value: V)
 
