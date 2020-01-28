@@ -4,47 +4,41 @@ import com.google.common.collect.Lists.cartesianProduct
 
 fun <T, V> Collection<T>.pivot(
     valueExtractor: ValueExtractor<T, V>,
-    dimensionsBuilder: (DimensionsBuilder<T>).(T) -> Unit
-) = PivotTable(this, valueExtractor, dimensionsBuilder)
+    dimensionsBuilder: Dimensions.(T) -> Unit
+) = PivotTableBuilder(this, valueExtractor, dimensionsBuilder)
 
-class PivotTable<T, V>(
+class PivotTableBuilder<T, V>(
     private val items: Collection<T>,
     private val valueExtractor: ValueExtractor<T, V>,
-    private val dimensionsBuilder: (DimensionsBuilder<T>).(T) -> Unit
+    private val dimensionsBuilder: Dimensions.(T) -> Unit
 ) {
-    fun compute() =
+    fun table() =
         items
             .flatMap(this::cells)
             .groupBy(Cell<V>::dimensions)
             .mapValues { it.value.values() }
             .mapValues { valueExtractor.reduce(it.value) }
+            .let(::PivotTable)
 
-    private fun cells(item: T): List<Cell<V>> {
-        val value = valueExtractor.extract(item)
-        return DimensionsBuilder<T>()
+    private fun cells(item: T) =
+        Dimensions()
             .apply { dimensionsBuilder(item) }
-            .build()
             .allCombinations()
-            .map { Cell(it, value) }
-    }
+            .map { Cell(it, valueExtractor.extract(item)) }
 }
+
+data class PivotTable<V>(val values: Map<Dimensions, V>)
 
 class ValueExtractor<T, V>(
     val extract: (T) -> V,
     val reduce: (Collection<V>) -> V
 )
 
-class DimensionsBuilder<T> {
-    private val dimensions = mutableListOf<Dimension>()
-
+data class Dimensions(private val dimensions: MutableList<Dimension> = mutableListOf()) {
     fun dimension(vararg fragments: Any?) {
         dimensions += Dimension(fragments.toList())
     }
 
-    fun build() = Dimensions(dimensions)
-}
-
-data class Dimensions(private val dimensions: List<Dimension>) {
     fun allCombinations(): List<Dimensions> =
         cartesianProduct(dimensions.map(Dimension::allLevels))
             .map(::Dimensions)
@@ -57,7 +51,7 @@ data class Dimension(private val fragments: List<*>) {
 
     private fun parent() =
         fragments
-            .takeIf(Collection<*>::isNotEmpty)
+            .takeIf { it.isNotEmpty() }
             ?.dropLast(1)
             ?.let(::Dimension)
 

@@ -1,4 +1,6 @@
-package pl.helenium.kpivot
+package pl.helenium.kpivot.operations
+
+import pl.helenium.kpivot.ValueExtractor
 
 fun <T> count() =
     ValueExtractor<T, Int>({ 1 }) {

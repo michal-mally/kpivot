@@ -13,10 +13,13 @@ dependencies {
     implementation("com.google.guava:guava:28.2-jre")
 
     // tests
-    testImplementation(kotlin("test"))
-    testImplementation(kotlin("test-junit"))
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions.jvmTarget = "11"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
