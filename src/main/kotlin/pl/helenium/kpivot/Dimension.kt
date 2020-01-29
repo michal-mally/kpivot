@@ -6,7 +6,10 @@ import pl.helenium.kpivot.util.tail
 data class Dimension(private val fragments: List<*>) : Comparable<Dimension> {
     constructor(vararg fragments: Any) : this(fragments.toList())
 
-    fun allLevels() = generateSequence(this, Dimension::parent).toList()
+    fun allLevels() =
+        generateSequence(this, Dimension::parent)
+            .toList()
+            .reversed()
 
     private fun parent() =
         fragments
@@ -25,7 +28,8 @@ data class Dimension(private val fragments: List<*>) : Comparable<Dimension> {
             fun List<*>.firstToStringOrNull() = firstOrNull()?.toString()
             compareValues(
                 f1.firstToStringOrNull() ?: return 1,
-                f2.firstToStringOrNull() ?: return -1)
+                f2.firstToStringOrNull() ?: return -1
+            )
                 .takeIf { it != 0 }
                 ?.let { return it }
 

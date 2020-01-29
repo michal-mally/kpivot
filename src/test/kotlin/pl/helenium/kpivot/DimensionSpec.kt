@@ -1,10 +1,12 @@
 package pl.helenium.kpivot
 
 import io.kotlintest.be
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotlintest.data.forall
+import io.kotlintest.matchers.collections.shouldContainExactly
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNot
 import io.kotlintest.specs.StringSpec
+import io.kotlintest.tables.row
 import java.time.DayOfWeek.MONDAY
 
 class DimensionSpec : StringSpec({
@@ -34,7 +36,7 @@ class DimensionSpec : StringSpec({
         // expect
         dimension
             .allLevels()
-            .shouldContainExactlyInAnyOrder(
+            .shouldContainExactly(
                 Dimension(),
                 Dimension("String"),
                 Dimension("String", 1),
@@ -50,6 +52,25 @@ class DimensionSpec : StringSpec({
         dimension
             .toString()
             .shouldBe("[${"String"}/${1}/${MONDAY}]")
+    }
+
+    "should properly order Dimension objects" {
+        forall(
+            row(Dimension(), Dimension(), 0),
+            row(Dimension(), Dimension("1"), 1),
+            row(Dimension("1"), Dimension(), -1),
+            row(Dimension("1"), Dimension("2"), -1),
+            row(Dimension("2"), Dimension("1"), 1),
+            row(Dimension(1), Dimension("1"), 0),
+            row(Dimension("1"), Dimension("1", 2), 1),
+            row(Dimension("1", 2), Dimension("1"), -1),
+            row(Dimension("1", 2), Dimension("1", 3), -1),
+            row(Dimension("1", 2, 3), Dimension("1", 3), -1)
+        ) { a, b, result ->
+            a
+                .compareTo(b)
+                .shouldBe(result)
+        }
     }
 
 })
