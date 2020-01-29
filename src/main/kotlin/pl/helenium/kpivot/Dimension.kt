@@ -17,17 +17,14 @@ data class Dimension(private val fragments: List<*>) : Comparable<Dimension> {
 
     override fun compareTo(other: Dimension): Int {
         tailrec fun compareFragments(f1: List<*>, f2: List<*>): Int {
-            if (f1.isEmpty() && f2.isEmpty()) {
+            if (f1 == f2) {
                 return 0
             }
 
-            listOf(
-                f1.takeIf { it.isNotEmpty() } ?: return 1,
-                f2.takeIf { it.isNotEmpty() } ?: return -1
-            )
-                .map { it.first() }
-                .map { it.toString() }
-                .let { it[0].compareTo(it[1]) }
+            fun List<*>.firstToStringOrNull() = firstOrNull()?.toString()
+            compareValues(
+                f1.firstToStringOrNull() ?: return 1,
+                f2.firstToStringOrNull() ?: return -1)
                 .takeIf { it != 0 }
                 ?.let { return it }
 
