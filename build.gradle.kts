@@ -14,6 +14,8 @@ dependencies {
 
     // tests
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.6.10")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
