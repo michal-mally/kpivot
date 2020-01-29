@@ -26,10 +26,11 @@ class PivotTableBuilder<T, V>(
 }
 
 data class PivotTable<V>(val values: Map<Dimensions, V>) {
-    fun keysForDimension(index: Int) = values
-        .keys
-        .mapNotNull { it[index] }
-        .distinct()
+    fun keysForDimension(index: Int) =
+        values
+            .keys
+            .mapNotNull { it[index] }
+            .toSortedSet()
 }
 
 class ValueExtractor<T, V>(

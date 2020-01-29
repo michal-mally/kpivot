@@ -2,7 +2,7 @@ package pl.helenium.kpivot
 
 import io.kotlintest.be
 import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotlintest.matchers.collections.shouldContainExactly
 import io.kotlintest.should
 import io.kotlintest.specs.StringSpec
 import pl.helenium.kpivot.operations.sum
@@ -41,7 +41,7 @@ class PivotTableSpec : StringSpec({
         // then
         table
             .keysForDimension(0)
-            .shouldContainExactlyInAnyOrder(
+            .shouldContainExactly(
                 Dimension(1, "One"),
                 Dimension(1),
                 Dimension(2, "Two"),
@@ -52,7 +52,7 @@ class PivotTableSpec : StringSpec({
         // and
         table
             .keysForDimension(1)
-            .shouldContainExactlyInAnyOrder(
+            .shouldContainExactly(
                 Dimension("One", 1),
                 Dimension("One"),
                 Dimension("Two", 2),
