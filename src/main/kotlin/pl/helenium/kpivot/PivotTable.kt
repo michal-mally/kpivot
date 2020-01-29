@@ -25,7 +25,12 @@ class PivotTableBuilder<T, V>(
             .map { Cell(it, valueExtractor.extract(item)) }
 }
 
-data class PivotTable<V>(val values: Map<Dimensions, V>)
+data class PivotTable<V>(val values: Map<Dimensions, V>) {
+    fun keysForDimension(index: Int) = values
+        .keys
+        .mapNotNull { it[index] }
+        .distinct()
+}
 
 class ValueExtractor<T, V>(
     val extract: (T) -> V,

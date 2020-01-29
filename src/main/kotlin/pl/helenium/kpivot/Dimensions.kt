@@ -13,5 +13,7 @@ data class Dimensions(private val dimensions: MutableList<Dimension> = mutableLi
         cartesianProduct(dimensions.map(Dimension::allLevels))
             .map(::Dimensions)
 
+    operator fun get(index: Int) = dimensions.getOrNull(index)
+
     override fun toString() = dimensions.joinToString(separator = "x")
 }

@@ -1,6 +1,7 @@
 package pl.helenium.kpivot
 
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotlintest.matchers.types.shouldBeNull
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import java.time.DayOfWeek.MONDAY
@@ -95,6 +96,33 @@ class DimensionsSpec : StringSpec({
         dimensions
             .toString()
             .shouldBe("[${"String"}/${1}/${MONDAY}]x[${1337}/${"Cake is a Lie"}]")
+    }
+
+    "should return existing dimension by index"() {
+        // given
+        val dimensions = Dimensions(
+            Dimension("String", 1, MONDAY),
+            Dimension(1337, "Cake is a Lie")
+        )
+
+        // expect
+        dimensions[0]
+            .shouldBe(Dimension("String", 1, MONDAY))
+
+        // and
+        dimensions[1]
+            .shouldBe(Dimension(1337, "Cake is a Lie"))
+    }
+
+    "should return null when accessing non-existent dimension by index"() {
+        // given
+        val dimensions = Dimensions(
+            Dimension("String", 1, MONDAY),
+            Dimension(1337, "Cake is a Lie")
+        )
+
+        // expect
+        dimensions[2].shouldBeNull()
     }
 
 })
