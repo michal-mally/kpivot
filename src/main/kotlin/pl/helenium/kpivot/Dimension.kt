@@ -1,5 +1,6 @@
 package pl.helenium.kpivot
 
+import pl.helenium.kpivot.util.dropLast
 import pl.helenium.kpivot.util.tail
 
 data class Dimension(private val fragments: List<*>) : Comparable<Dimension> {
@@ -10,7 +11,7 @@ data class Dimension(private val fragments: List<*>) : Comparable<Dimension> {
     private fun parent() =
         fragments
             .takeIf { it.isNotEmpty() }
-            ?.tail()
+            ?.dropLast()
             ?.let(::Dimension)
 
     override fun toString() = fragments.joinToString(separator = "/", prefix = "[", postfix = "]")

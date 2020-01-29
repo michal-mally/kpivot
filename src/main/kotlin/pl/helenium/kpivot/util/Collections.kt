@@ -1,3 +1,5 @@
 package pl.helenium.kpivot.util
 
-fun <E> List<E>.tail() = dropLast(1)
+fun <E> Collection<E>.tail() = drop(1)
+
+fun <E> List<E>.dropLast() = dropLast(1)
