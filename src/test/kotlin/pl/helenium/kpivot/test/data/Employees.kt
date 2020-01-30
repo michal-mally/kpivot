@@ -5,8 +5,8 @@ import java.util.*
 import kotlin.random.Random
 
 enum class Department {
-    STOCKS,
-    FINANCE,
+    HR,
+    LEGAL,
     IT
 }
 
