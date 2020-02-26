@@ -8,9 +8,12 @@ import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.row
 import java.time.DayOfWeek.MONDAY
 
+// KF: using kotlin-test
 class DimensionSpec : FreeSpec({
 
+    // KF: grouping tests
     "equals()" - {
+        // KF: descriptive names
         "two dimensions with the same values should equal" {
             // given
             val dim1 = Dimension("String", 1, MONDAY)
@@ -37,6 +40,7 @@ class DimensionSpec : FreeSpec({
         // expect
         dimension
             .allLevels()
+                // KF: Using extension functions that allow flexible matching
             .shouldContainExactly(
                 Dimension(),
                 Dimension("String"),
@@ -56,6 +60,7 @@ class DimensionSpec : FreeSpec({
     }
 
     "compareTo()" - {
+        // KF: Using data-driven approach
         listOf(
             row(Dimension(), Dimension(), 0),
             row(Dimension(), Dimension("1"), 1),
